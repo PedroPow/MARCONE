@@ -12,13 +12,8 @@ from discord.ui import View, Button, Modal, TextInput
 from database import cursor, db
 from utils.plataformas import detectar_plataforma, link_permitido
 
-CANAL_LIVES = 1488723592400343060   # ID canal lives
-CANAL_VIDEOS = 1489078271432855682 # ID canal videos
-
-
-def embed_padrao(msg, ok=True):
-    cor = 0xf1c40f if ok else 0xf1c40f
-    return discord.Embed(description=msg, color=cor)
+CANAL_LIVES = 1425626605455151154   # ID canal lives
+CANAL_VIDEOS = 1425626605455151155 # ID canal videos
 
 
 # ==========================================
@@ -103,6 +98,10 @@ class LiveModal(Modal, title="Abrir Live"):
         embed.set_footer(text="Criadores MarconeRP® - Todos os direitos reservados", icon_url="https://cdn.discordapp.com/emojis/1490521797454598224.webp?size=96")        
 
         canal = interaction.guild.get_channel(CANAL_LIVES)
+
+        if canal is None:
+            canal = await interaction.guild.fetch_channel(CANAL_LIVES)
+
         msg = await canal.send(embed=embed)
 
         cursor.execute(
@@ -172,6 +171,10 @@ class VideoModal(Modal, title="Enviar Vídeo"):
         embed.set_footer(text="Criadores MarconeRP® - Todos os direitos reservados", icon_url="https://cdn.discordapp.com/emojis/1490521797454598224.webp?size=96")        
 
         canal = interaction.guild.get_channel(CANAL_VIDEOS)
+
+        if canal is None:
+            canal = await interaction.guild.fetch_channel(CANAL_VIDEOS)
+
         await canal.send(embed=embed)
 
         await interaction.response.send_message(
