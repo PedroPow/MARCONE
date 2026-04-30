@@ -17,7 +17,7 @@ bot = commands.Bot(
     intents=intents
 )
 
-TOKEN = os.getenv("TOKEN_MCR")  # Certifique-se de definir o TOKEN no .env ou variáveis de ambiente
+TOKEN = os.getenv("TOKEN_MCN")  # Certifique-se de definir o TOKEN no .env ou variáveis de ambiente
 
 # guard para não reenviar painel/verify em reconexões
 bot._ready_sent = False
