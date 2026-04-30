@@ -193,3 +193,12 @@ def embed_live():
     embed.set_image(url=CONFIG_VISUAL["banners"]["gif"])
     embed.set_footer(text="Criadores Marcone® | #2026 • © Todos os direitos reservados.", icon_url="https://cdn.discordapp.com/attachments/1444735189765849320/1487659680997179612/ADESIVO_AMARELO_MARCONE_1.png?ex=69c9f28b&is=69c8a10b&hm=e589b322c781d19b55a3fe235a04c1f93498e1f7e48fd463d9b8fd31261b95f6&")
     return embed
+
+
+def beneficios(nivel):
+    lista = BENEFICIOS.get(nivel.lower(), [])
+
+    if not lista:
+        return "Sem benefícios cadastrados."
+
+    return "\n".join(f"🔸 {item}" for item in lista)
