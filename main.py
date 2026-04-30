@@ -3,11 +3,14 @@
 
 import discord
 from discord.ext import commands
+from discord.ui import Modal, TextInput, View, Button, Select
 from views.ticket_view import TicketView, PainelAbrirTicketView
 from views.live_view import LiveVideoView
-from discord.ext import commands
 import os
-from dotenv import load_dotenv 
+import asyncio
+import aiohttp
+import io
+from dotenv import load_dotenv
 
 GUILD_ID = 1425626603869704294
 
