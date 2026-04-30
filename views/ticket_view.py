@@ -334,9 +334,11 @@ class NotificarMembroSelect(UserSelect):
         embed_dm = discord.Embed(
             title="✅ Ticket Respondido",
             description=(
-                f"> Olá {membro.mention},\n\n"
-                f"> `Sua candidatura recebeu resposta.`\n"
-                f"> `Clique abaixo para ver seu ticket.`"
+            f"Olá {membro.mention},\n"
+            f">ㅤ"
+            f"> `Seu ticket foi respondido no servidor **Criadores Marcone®**.`\n"
+            f"> `Para continuar como o ticket, favor responder com alguma mensagem no ticket.`\n"
+            f"> `Caso contrário, seu ticket **será deletado** em 24 horas (1 dias).`\n"
             ),
             color=0xF1C40F
         )
