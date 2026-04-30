@@ -5,7 +5,8 @@ import discord
 from discord.ext import commands
 from views.ticket_view import TicketView, PainelAbrirTicketView
 from views.live_view import LiveVideoView
-from os import getenv
+import getenv
+import os
 from dotenv import load_dotenv  
 
 load_dotenv()
