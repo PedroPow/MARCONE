@@ -26,8 +26,8 @@ bot._ready_sent = False
 # IDS FIXOS
 # ===============================
 
-CANAL_ABRIR_TICKET = 1498888608818397266
-CANAL_LIVE_VIDEO = 1488723564247908462
+CANAL_ABRIR_TICKET = 1475946877034954873
+CANAL_LIVE_VIDEO = 1499232491683184660
 
 # ============================
 #        COMANDO /clearall
