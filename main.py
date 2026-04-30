@@ -9,6 +9,8 @@ from discord.ext import commands
 import os
 from dotenv import load_dotenv 
 
+GUILD_ID = 1425626603869704294
+
 intents = discord.Intents.all()
 
 bot = commands.Bot(
