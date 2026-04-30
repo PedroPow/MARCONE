@@ -89,4 +89,4 @@ async def on_ready():
         view=LiveVideoView()
     )
 
-bot.run(getenv("TOKEN_MCR"))
+bot.run(os.getenv("TOKEN_MCN"))
