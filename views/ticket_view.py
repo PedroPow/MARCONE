@@ -358,6 +358,8 @@ class PromoverSelect(Select):
 
     async def callback(self, interaction):
 
+        await interaction.response.defer(ephemeral=True)        
+
         nivel = self.values[0]
         membro = interaction.guild.get_member(self.user_id)
 
@@ -402,7 +404,7 @@ class PromoverSelect(Select):
         )
         db.commit()
 
-        await interaction.response.send_message(
+        await interaction.followup.send(
             embed=embed_padrao(
                 f"✅ {membro.mention} promovido para {nivel.upper()}"
             ),
