@@ -5,11 +5,9 @@ import discord
 from discord.ext import commands
 from views.ticket_view import TicketView, PainelAbrirTicketView
 from views.live_view import LiveVideoView
-import getenv
+from discord.ext import commands
 import os
-from dotenv import load_dotenv  
-
-load_dotenv()
+from dotenv import load_dotenv 
 
 intents = discord.Intents.all()
 
@@ -18,6 +16,7 @@ bot = commands.Bot(
     intents=intents
 )
 
+load_dotenv()
 TOKEN = os.getenv("TOKEN_MCN")  # Certifique-se de definir o TOKEN no .env ou variáveis de ambiente
 
 # guard para não reenviar painel/verify em reconexões
