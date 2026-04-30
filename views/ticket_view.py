@@ -598,6 +598,19 @@ class ContratarModal(Modal, title="Contratar"):
         )
 
 
+class NivelView(View):
+    def __init__(self, nome, user_id, ingame, redes):
+        super().__init__(timeout=180)
+
+        self.add_item(
+            NivelSelect(
+                nome=nome,
+                user_id=user_id,
+                ingame=ingame,
+                redes=redes
+            )
+        )
+
 class NivelSelect(Select):
     def __init__(self, *, nome, user_id, ingame, redes):
 
