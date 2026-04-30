@@ -107,7 +107,7 @@ class PainelAbrirTicketView(View):
         }
 
         canal = await interaction.guild.create_text_channel(
-            name=f"ticket-{interaction.user.name}",
+            name=f"🎫・{interaction.user.name}",
             category=categoria,
             overwrites=overwrites
         )
@@ -590,22 +590,10 @@ class ContratarModal(Modal, title="Contratar"):
         )
 
 
-class NivelView(View):
-    def __init__(self, nome, user_id, ingame, redes):
-        super().__init__(timeout=180)
-
-        self.add_item(
-            NivelSelect(
-                nome,
-                user_id,
-                ingame,
-                redes
-            )
-        )
 
 
 class NivelSelect(Select):
-    def __init__(self, nome, user_id, ingame, redes):
+    def __init__(self, *, nome, user_id, ingame, redes):
 
         self.nome = nome
         self.user_id = int(user_id)
