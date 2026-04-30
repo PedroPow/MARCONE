@@ -578,25 +578,31 @@ class ContratarModal(Modal, title="Contratar"):
 
     async def on_submit(self, interaction):
 
+        user_id = self.user_id.value.strip()
+
+        if not user_id.isdigit():
+            return await interaction.response.send_message(
+                embed=embed_padrao("❌ ID Discord inválido.", False),
+                ephemeral=True
+            )
+
         await interaction.response.send_message(
             embed=embed_padrao("Escolha o nível do streamer."),
             view=NivelView(
-                self.nome.value,
-                self.user_id.value,
-                self.ingame.value,
-                self.redes.value
+                self.nome.value.strip(),
+                int(user_id),
+                self.ingame.value.strip(),
+                self.redes.value.strip()
             ),
             ephemeral=True
         )
-
-
 
 
 class NivelSelect(Select):
     def __init__(self, *, nome, user_id, ingame, redes):
 
         self.nome = nome
-        self.user_id = int(user_id)
+        self.user_id = user_id
         self.ingame = ingame
         self.redes = redes
 
