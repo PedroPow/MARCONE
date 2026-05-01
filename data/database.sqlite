@@ -1,0 +1,16 @@
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS plataformas (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    link TEXT
+)
+""")
+db.commit()
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS plataformas (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    link TEXT UNIQUE
+)
+""")

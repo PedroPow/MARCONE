@@ -61,6 +61,33 @@ def embed_padrao(msg, ok=True):
     cor = 0xF1C40F if ok else 0xE74C3C
     return discord.Embed(description=msg, color=cor)
 
+def criar_embed_streamer(membro, nivel, ingame="Atualizar Manualmente", redes="Não informado"):
+    embed = discord.Embed(
+        title="<:PONTOELETRONICO:1498906803281334382> Streamer Atualizado",
+        description=(
+            f"Informações do Streamer:\n\n"
+            f"🔸`Membro:` {membro.mention}\n"
+            f"🔸`ID Discord:` {membro.id}\n"
+            f"🔸`ID Ingame:` {ingame}\n"
+            f"🔸`Nível:` {nivel.upper()}\n\n"
+            f"--------------------------------------\n\n"
+            f"{beneficios(nivel)}\n\n"
+            f"--------------------------------------\n\n"
+            f"🔸`Plataformas:`\n🔸{redes}"
+        ),
+        color=0xF1C40F
+    )
+
+    embed.set_image(
+        url="https://cdn.discordapp.com/attachments/1444735189765849320/1487656538159190076/EMAIL_CRIADORES_AMARELO_KABRINHA.png"
+    )
+
+    embed.set_footer(
+        text="Criadores MarconeRP® - Todos os direitos reservados"
+    )
+
+    return embed    
+
 
 # ==========================================
 # ABRIR TICKET
@@ -364,10 +391,16 @@ class PromoverSelect(Select):
         membro = interaction.guild.get_member(self.user_id)
 
         if not membro:
-            return await interaction.response.send_message(
+            return await interaction.followup.send(
                 embed=embed_padrao("❌ Usuário não encontrado.", False),
                 ephemeral=True
             )
+        
+        async for msg in interaction.channel.history(limit=20, oldest_first=True):
+            if msg.author == interaction.client.user and msg.embeds:
+                novo_embed = criar_embed_streamer(membro, nivel)
+                await msg.edit(embed=novo_embed)
+                break      
 
         # remove cargos antigos
         for cargos in CARGOS.values():
@@ -420,6 +453,9 @@ class RebaixarModal(Modal, title="Rebaixar"):
 
     async def on_submit(self, interaction):
 
+
+        await interaction.response.defer(ephemeral=True)
+
         membro = interaction.guild.get_member(
             int(self.user_id.value)
         )
@@ -433,7 +469,8 @@ class RebaixarModal(Modal, title="Rebaixar"):
         ordem = list(CARGOS.keys())
 
         atual = None
-        for nome, cargos in CARGOS.items():
+        for nome in reversed(list(CARGOS.keys())):
+            cargos = CARGOS[nome]
             for cid in cargos:
                 role = interaction.guild.get_role(cid)
                 if role and role in membro.roles:
@@ -450,11 +487,10 @@ class RebaixarModal(Modal, title="Rebaixar"):
 
         pos = ordem.index(atual)
 
-        if pos == 0:
-            return await interaction.response.send_message(
-                embed=embed_padrao("❌ Já está no menor nível.", False),
-                ephemeral=True
-            )
+        await interaction.followup.send(
+            embed=embed_padrao(f"⬇️ Rebaixado para {novo.upper()}"),
+            ephemeral=True
+        )
 
         novo = ordem[pos - 1]
 
@@ -492,6 +528,13 @@ class RebaixarModal(Modal, title="Rebaixar"):
             embed=embed_padrao(f"⬇️ Rebaixado para {novo.upper()}"),
             ephemeral=True
         )
+
+        async for msg in interaction.channel.history(limit=20, oldest_first=True):
+            if msg.author == interaction.client.user and msg.embeds:
+                embed = msg.embeds[0]
+
+        novo_embed = criar_embed_streamer(membro, novo)
+        await msg.edit(embed=novo_embed)       
 
 
 # ==========================================
@@ -541,14 +584,32 @@ class RenomearModal(Modal, title="Renomear"):
 
     async def on_submit(self, interaction):
 
-        await interaction.channel.edit(
-            name=self.nome.value
-        )
+        novo_nome = self.nome.value.strip().lower().replace(" ", "-")
 
-        await interaction.response.send_message(
+        if interaction.channel.name == novo_nome:
+            return await interaction.response.send_message(
+                embed=embed_padrao("❌ Esse nome já está no canal.", False),
+                ephemeral=True
+            )
+
+        await interaction.response.defer(ephemeral=True)
+
+        try:
+            await interaction.channel.edit(name=novo_nome)
+
+        except discord.HTTPException:
+            return await interaction.followup.send(
+                embed=embed_padrao(
+                    "❌ Aguarde alguns minutos antes de renomear novamente.",
+                    False
+                ),
+                ephemeral=True
+            )
+
+        await interaction.followup.send(
             embed=embed_padrao("✅ Ticket renomeado."),
             ephemeral=True
-        )        
+        )     
 
 # ==========================================
 # CONTRATAR
