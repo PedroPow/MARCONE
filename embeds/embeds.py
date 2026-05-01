@@ -3,16 +3,6 @@
 
 import discord
 
-from embeds.embeds import BENEFICIOS
-
-def beneficios(nivel):
-    lista = BENEFICIOS.get(nivel.lower(), [])
-
-    if not lista:
-        return "Sem benefícios."
-
-    return "\n".join(f"🔸 {item}" for item in lista)
-
 # Copiado de bot.py para evitar importação circular
 CONFIG_VISUAL = {
     "cores": {
