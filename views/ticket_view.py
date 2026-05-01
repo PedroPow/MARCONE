@@ -283,9 +283,6 @@ class ConfigSelect(Select):
         elif escolha == "contratar":
             return await interaction.response.send_modal(ContratarModal())
 
-        elif escolha == "renomear":
-            return await interaction.response.send_modal(RenomearModal())
-
         elif escolha == "notificar":
             return await interaction.response.send_message(
                 embed=embed_padrao("Selecione o membro."),
@@ -396,11 +393,13 @@ class PromoverSelect(Select):
                 ephemeral=True
             )
         
-        async for msg in interaction.channel.history(limit=20, oldest_first=True):
+        # atualizar embed principal do streamer
+        async for msg in interaction.channel.history(limit=50):
             if msg.author == interaction.client.user and msg.embeds:
-                novo_embed = criar_embed_streamer(membro, nivel)
-                await msg.edit(embed=novo_embed)
-                break      
+                if "Streamer Contratado" in msg.embeds[0].title or "Streamer Atualizado" in msg.embeds[0].title:
+                    novo_embed = criar_embed_streamer(membro, nivel)
+                    await msg.edit(embed=novo_embed)
+                    break     
 
         # remove cargos antigos
         for cargos in CARGOS.values():
@@ -487,12 +486,18 @@ class RebaixarModal(Modal, title="Rebaixar"):
 
         pos = ordem.index(atual)
 
+        if pos == 0:
+            return await interaction.followup.send(
+                embed=embed_padrao("❌ Este membro já está no menor nível.", False),
+                ephemeral=True
+            )
+
+        novo = ordem[pos - 1]
+
         await interaction.followup.send(
             embed=embed_padrao(f"⬇️ Rebaixado para {novo.upper()}"),
             ephemeral=True
         )
-
-        novo = ordem[pos - 1]
 
         # remove cargos atuais
         for cid in CARGOS[atual]:
@@ -529,12 +534,12 @@ class RebaixarModal(Modal, title="Rebaixar"):
             ephemeral=True
         )
 
-        async for msg in interaction.channel.history(limit=20, oldest_first=True):
+        async for msg in interaction.channel.history(limit=50):
             if msg.author == interaction.client.user and msg.embeds:
-                embed = msg.embeds[0]
-
-        novo_embed = criar_embed_streamer(membro, novo)
-        await msg.edit(embed=novo_embed)       
+                if "Streamer Contratado" in msg.embeds[0].title or "Streamer Atualizado" in msg.embeds[0].title:
+                    novo_embed = criar_embed_streamer(membro, novo)
+                    await msg.edit(embed=novo_embed)
+                    break      
 
 
 # ==========================================
@@ -573,43 +578,7 @@ class EncerrarModal(Modal, title="Encerrar Contrato"):
             embed=embed_padrao("❌ Contrato encerrado."),
             ephemeral=True
         )
-
-
-# ==========================================
-# RENOMEAR
-# ==========================================
-
-class RenomearModal(Modal, title="Renomear"):
-    nome = TextInput(label="Novo nome")
-
-    async def on_submit(self, interaction):
-
-        novo_nome = self.nome.value.strip().lower().replace(" ", "-")
-
-        if interaction.channel.name == novo_nome:
-            return await interaction.response.send_message(
-                embed=embed_padrao("❌ Esse nome já está no canal.", False),
-                ephemeral=True
-            )
-
-        await interaction.response.defer(ephemeral=True)
-
-        try:
-            await interaction.channel.edit(name=novo_nome)
-
-        except discord.HTTPException:
-            return await interaction.followup.send(
-                embed=embed_padrao(
-                    "❌ Aguarde alguns minutos antes de renomear novamente.",
-                    False
-                ),
-                ephemeral=True
-            )
-
-        await interaction.followup.send(
-            embed=embed_padrao("✅ Ticket renomeado."),
-            ephemeral=True
-        )     
+ 
 
 # ==========================================
 # CONTRATAR
