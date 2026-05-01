@@ -3,7 +3,7 @@
 
 import discord
 
-# Copiado de bot.py para evitar importação circular
+
 CONFIG_VISUAL = {
     "cores": {
         "bronze": 0x8B0000,
