@@ -253,13 +253,10 @@ class ConfigSelect(Select):
         self.bot = bot
 
         options = [
-            discord.SelectOption(label="Promover Streamer", value="promover"),
-            discord.SelectOption(label="Rebaixar", value="rebaixar"),
-            discord.SelectOption(label="Encerrar Contrato", value="encerrar"),
-            discord.SelectOption(label="Contratar", value="contratar"),
-            discord.SelectOption(label="Renomear Ticket", value="renomear"),
             discord.SelectOption(label="Notificar Membro", value="notificar"),
-            discord.SelectOption(label="Add Plataforma", value="plataforma"),
+            discord.SelectOption(label="Contratar", value="contratar"),
+            discord.SelectOption(label="Promover Streamer", value="promover"),
+            discord.SelectOption(label="Encerrar Contrato", value="encerrar"),
         ]
 
         super().__init__(
@@ -274,9 +271,6 @@ class ConfigSelect(Select):
         if escolha == "promover":
             return await interaction.response.send_modal(PromoverModal())
 
-        elif escolha == "rebaixar":
-            return await interaction.response.send_modal(RebaixarModal())
-
         elif escolha == "encerrar":
             return await interaction.response.send_modal(EncerrarModal())
 
@@ -289,62 +283,6 @@ class ConfigSelect(Select):
                 view=NotificarMembroView(),
                 ephemeral=True
             )
-
-        elif escolha == "plataforma":
-            return await interaction.response.send_modal(
-                AddPlataformaModal()
-            )
-
-
-# ==========================================
-# ADD PLATAFORMA
-# ==========================================
-
-class AddPlataformaModal(Modal, title="Adicionar Plataforma"):
-
-    link = TextInput(
-        label="Link da Plataforma",
-        placeholder="https://tiktok.com/@usuario"
-    )
-
-    async def on_submit(self, interaction):
-
-        link = self.link.value.strip()
-
-        if not link_permitido(link):
-            return await interaction.response.send_message(
-                embed=embed_padrao("❌ Link inválido.", False),
-                ephemeral=True
-            )
-
-        dados = detectar_plataforma(link)
-
-        cursor.execute(
-            "SELECT user_id FROM tickets WHERE canal_id=?",
-            (interaction.channel.id,)
-        )
-        dados_ticket = cursor.fetchone()
-
-        if not dados_ticket:
-            return await interaction.response.send_message(
-                embed=embed_padrao("❌ Ticket não encontrado.", False),
-                ephemeral=True
-            )
-
-        user_id = dados_ticket[0]
-
-        cursor.execute(
-            "INSERT INTO plataformas(user_id, link) VALUES (?, ?)",
-            (user_id, link)
-        )
-        db.commit()
-
-        await interaction.response.send_message(
-            embed=embed_padrao(
-                f"✅ {dados['emoji']} Plataforma adicionada."
-            ),
-            ephemeral=True
-        )
 
 
 # ==========================================
@@ -442,104 +380,6 @@ class PromoverSelect(Select):
             ),
             ephemeral=True
         )
-
-# ==========================================
-# REBAIXAR
-# ==========================================
-
-class RebaixarModal(Modal, title="Rebaixar"):
-    user_id = TextInput(label="ID Discord")
-
-    async def on_submit(self, interaction):
-
-
-        await interaction.response.defer(ephemeral=True)
-
-        membro = interaction.guild.get_member(
-            int(self.user_id.value)
-        )
-
-        if not membro:
-            return await interaction.response.send_message(
-                embed=embed_padrao("❌ Usuário não encontrado.", False),
-                ephemeral=True
-            )
-
-        ordem = list(CARGOS.keys())
-
-        atual = None
-        for nome in reversed(list(CARGOS.keys())):
-            cargos = CARGOS[nome]
-            for cid in cargos:
-                role = interaction.guild.get_role(cid)
-                if role and role in membro.roles:
-                    atual = nome
-                    break
-            if atual:
-                break
-
-        if not atual:
-            return await interaction.response.send_message(
-                embed=embed_padrao("❌ Sem cargo streamer.", False),
-                ephemeral=True
-            )
-
-        pos = ordem.index(atual)
-
-        if pos == 0:
-            return await interaction.followup.send(
-                embed=embed_padrao("❌ Este membro já está no menor nível.", False),
-                ephemeral=True
-            )
-
-        novo = ordem[pos - 1]
-
-        await interaction.followup.send(
-            embed=embed_padrao(f"⬇️ Rebaixado para {novo.upper()}"),
-            ephemeral=True
-        )
-
-        # remove cargos atuais
-        for cid in CARGOS[atual]:
-            role = interaction.guild.get_role(cid)
-            if role and role in membro.roles:
-                await membro.remove_roles(role)
-
-        # adiciona cargos novos
-        for cid in CARGOS[novo]:
-            role = interaction.guild.get_role(cid)
-            if role:
-                await membro.add_roles(role)
-
-        nome_atual = interaction.channel.name
-
-        if "・" in nome_atual:
-            nome_base = nome_atual.split("・", 1)[1]
-        else:
-            nome_base = nome_atual
-
-        await interaction.channel.edit(
-            category=interaction.guild.get_channel(CATEGORIAS[novo]),
-            name=f"{BADGES[novo]}・{nome_base}"
-        )
-
-        cursor.execute(
-            "UPDATE contratos SET nivel=? WHERE user_id=?",
-            (novo, membro.id)
-        )
-        db.commit()
-
-        await interaction.response.send_message(
-            embed=embed_padrao(f"⬇️ Rebaixado para {novo.upper()}"),
-            ephemeral=True
-        )
-
-        async for msg in interaction.channel.history(limit=50):
-            if msg.author == interaction.client.user and msg.embeds:
-                if "Streamer Contratado" in msg.embeds[0].title or "Streamer Atualizado" in msg.embeds[0].title:
-                    novo_embed = criar_embed_streamer(membro, novo)
-                    await msg.edit(embed=novo_embed)
-                    break      
 
 
 # ==========================================
