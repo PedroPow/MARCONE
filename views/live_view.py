@@ -12,8 +12,8 @@ from discord.ui import View, Button, Modal, TextInput
 from database import cursor, db
 from utils.plataformas import detectar_plataforma, link_permitido
 
-CANAL_LIVES = 1425626605455151154   # ID canal lives
-CANAL_VIDEOS = 1425626605455151155 # ID canal videos
+CANAL_LIVES = 1502777768058814510   # ID canal lives
+CANAL_VIDEOS = 1502777768058814509 # ID canal videos
 
 def embed_padrao(msg, ok=True):
     cor = 0xF1C40F if ok else 0xE74C3C

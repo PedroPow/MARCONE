@@ -12,7 +12,7 @@ import aiohttp
 import io
 from dotenv import load_dotenv
 
-GUILD_ID = 1425626603869704294
+GUILD_ID = 1502777759863144518
 
 intents = discord.Intents.all()
 
@@ -22,7 +22,7 @@ bot = commands.Bot(
 )
 
 load_dotenv()
-TOKEN = os.getenv("TOKEN_MCN")  # Certifique-se de definir o TOKEN no .env ou variáveis de ambiente
+TOKEN = os.getenv("TOKEN_PERI")  # Certifique-se de definir o TOKEN no .env ou variáveis de ambiente
 
 # guard para não reenviar painel/verify em reconexões
 bot._ready_sent = False
@@ -31,8 +31,8 @@ bot._ready_sent = False
 # IDS FIXOS
 # ===============================
 
-CANAL_ABRIR_TICKET = 1475946877034954873
-CANAL_LIVE_VIDEO = 1499232491683184660
+CANAL_ABRIR_TICKET = 1502777767610155126
+CANAL_LIVE_VIDEO = 1502777768058814508
 
 
 @bot.tree.command(name="mensagem", description="Enviar mensagem como o bot.", guild=discord.Object(id=GUILD_ID))
@@ -73,7 +73,7 @@ async def on_ready():
     embed = discord.Embed(
         title="<:TICKET:1498895809645908021> CENTRAL DE CADASTRO",
         description=(
-            "> `Deseja virar streamer da MarconeRP?`\n"
+            "> `Deseja virar streamer da JardimPeri?`\n"
             "> `Clique no botão abaixo para abrir ticket.`"
         ),
         color=0xf1c40f
@@ -81,7 +81,7 @@ async def on_ready():
 
     embed.set_image(url="https://cdn.discordapp.com/attachments/1444735189765849320/1487656538159190076/EMAIL_CRIADORES_AMARELO_KABRINHA.png?ex=69f2ce1e&is=69f17c9e&hm=07a19cd2c52ae288163fe3211d3d9f1d4e849403d4bbf79bd09950181319af20&")
 
-    embed.set_footer(text="Criadores MarconeRP® - Todos os direitos reservados", icon_url="https://cdn.discordapp.com/emojis/1490521797454598224.webp?size=96")    
+    embed.set_footer(text="Criadores JardimPeri® - Todos os direitos reservados", icon_url="https://cdn.discordapp.com/emojis/1490521797454598224.webp?size=96")    
 
     await canal_ticket.send(
         embed=embed,
@@ -96,13 +96,13 @@ async def on_ready():
         color=0xf1c40f
     )
 
-    embed2.set_image(url="https://cdn.discordapp.com/attachments/1444735189765849320/1487656538159190076/EMAIL_CRIADORES_AMARELO_KABRINHA.png?ex=69f2ce1e&is=69f17c9e&hm=07a19cd2c52ae288163fe3211d3d9f1d4e849403d4bbf79bd09950181319af20&")
+    embed2.set_image(url="https://cdn.discordapp.com/attachments/1444735189765849320/1503019253782282362/bannerPeri.png?ex=6a0324c2&is=6a01d342&hm=054302c0966bc1fd56e0b0ab0eeb76386d9a499bc53458684a966cd2f4aa2088&")
 
-    embed2.set_footer(text="Criadores MarconeRP® - Todos os direitos reservados", icon_url="https://cdn.discordapp.com/emojis/1490521797454598224.webp?size=96")    
+    embed2.set_footer(text="Criadores JardimPeri® - Todos os direitos reservados", icon_url="https://cdn.discordapp.com/attachments/1444735189765849320/1503019230910746654/GIF_PERI.gif?ex=6a0324bd&is=6a01d33d&hm=f73a9ccccd7c7e3fb9336e7a6aa29ee58492f9061c262c7153597e5844a02ea2&")    
 
     await canal_live.send(
         embed=embed2,
         view=LiveVideoView()
     )
 
-bot.run(os.getenv("TOKEN_MCN"))
+bot.run(os.getenv("TOKEN_PERI"))
